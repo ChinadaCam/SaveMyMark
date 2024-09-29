@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Links Úteis com Tags</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #bb86fc;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .left-column {
+            flex: 3;
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .right-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        form input, form textarea, form button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+        }
+
+        form input::placeholder, form textarea::placeholder, #filterTag::placeholder {
+            color: #9e9e9e;
+        }
+
+        form button {
+            background-color: #bb86fc;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #a675e1;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        /* Novo Layout para Itens */
+        ul li {
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2a2a2a;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        ul li .link-details {
+            flex-grow: 1;
+            padding-right: 20px;
+        }
+
+        ul li .link-details a {
+            font-size: 18px;
+            font-weight: bold;
+            color: #bb86fc;
+            text-decoration: none;
+            display: block;
+        }
+
+        ul li .link-details a:hover {
+            text-decoration: underline;
+        }
+
+        ul li .tags {
+            font-size: 14px;
+            font-style: italic;
+            color: #9e9e9e;
+            margin-top: 5px;
+        }
+
+        ul li .description {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #b3b3b3;
+        }
+
+        ul li .remove-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            line-height: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        ul li .remove-btn:hover {
+            background-color: #ff1a1a;
+        }
+
+        button#saveLinksBtn, button#exportLinksBtn, input#importLinksInput {
+            background-color: #03dac6;
+            color: #121212;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            width: 100%;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        button#saveLinksBtn:hover, button#exportLinksBtn:hover, input#importLinksInput:hover {
+            background-color: #02c4b0;
+        }
+
+        select, input {
+            padding: 10px;
+            background-color: #2a2a2a;
+            border: none;
+            color: #e0e0e0;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        #sortOptions, #exportImportOptions {
+            margin-bottom: 20px;
+        }
+
+        #filterTag {
+            margin-bottom: 20px;
+        }
+
+        .recent-items {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+        }
+
+        .recent-items h3 {
+            color: #bb86fc;
+        }
+
+        .recent-items ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .recent-items ul li {
+            padding: 10px 0;
+            border-bottom: 1px solid #444;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Lista de Links Úteis com Tags</h1>
+
+    <div class="container">
+        <!-- Coluna Esquerda: Lista de Links -->
+        <div class="left-column">
+            <form id="addLinkForm">
+                <input type="text" id="siteName" placeholder="Nome do Site" required>
+                <input type="url" id="siteURL" placeholder="URL do Site" required>
+                <input type="text" id="siteTags" placeholder="Tags (separadas por vírgula)">
+                <textarea id="siteDescription" placeholder="Descrição do site"></textarea>
+                <button type="submit">Adicionar Link</button>
+            </form>
+
+            <!-- Botão para salvar localmente -->
+            <button id="saveLinksBtn" onclick="saveData()">Salvar Links</button>
+
+            <!-- Lista de links -->
+            <ul id="linkList">
+                <!-- A lista será preenchida dinamicamente -->
+            </ul>
+
+            <!-- Itens Recentemente Adicionados -->
+            <div class="recent-items">
+                <h3>Itens Recentemente Adicionados</h3>
+                <ul id="recentList">
+                    <!-- Lista de links adicionados recentemente -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Coluna Direita: Filtro, Ordenação e Exportação -->
+        <div class="right-column">
+            <!-- Campo de busca para filtrar por tags -->
+            <input type="text" id="filterTag" placeholder="Filtrar por tag">
+
+            <!-- Opções de ordenação -->
+            <div id="sortOptions">
+                <label for="sortSelect">Ordenar por:</label>
+                <select id="sortSelect">
+                    <option value="name">Nome</option>
+                    <option value="tag">Tag</option>
+                </select>
+            </div>
+
+            <!-- Opções para exportar/importar lista -->
+            <div id="exportImportOptions">
+                <button id="exportLinksBtn" onclick="exportLinks()">Exportar Links</button>
+                <input type="file" id="importLinksInput" accept=".json" onchange="importLinks()">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const linkList = document.getElementById('linkList');
+        const recentList = document.getElementById('recentList');
+        const addLinkForm = document.getElementById('addLinkForm');
+        const filterTag = document.getElementById('filterTag');
+        const sortSelect = document.getElementById('sortSelect');
+        let recentlyAdded = [];
+
+        // Carrega os links do LocalStorage ao carregar a página
+        window.onload = function() {
+            loadLinks();
+        };
+
+        // Adiciona um novo link à lista e ao LocalStorage
+        addLinkForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const siteName = document.getElementById('siteName').value;
+            const siteURL = document.getElementById('siteURL').value;
+            const siteTags = document.getElementById('siteTags').value;
+            const siteDescription = document.getElementById('siteDescription').value;
+
+            addLink(siteName, siteURL, siteTags, siteDescription);
+            saveData(); // Salva automaticamente após adicionar um link
+            addLinkForm.reset(); // Limpa o formulário
+
+            // Atualiza a lista de itens recentemente adicionados
+            addRecentItem(siteName);
+        });
+
+        // Função para adicionar um link com botão de remover
+        function addLink(name, url, tags, description) {
+            const newLink = document.createElement('li');
+            newLink.innerHTML = `
+                <div class="link-details">
+                    <a href="${url}" target="_blank">${name}</a>
+                    <div class="tags">Tags: ${tags}</div>
+                    <div class="description">${description}</div>
+                </div>
+                <button class="remove-btn" onclick="removeLink(this)">X</button>
+            `;
+            linkList.appendChild(newLink);
+        }
+
+        // Função para adicionar um item recentemente adicionado
+        function addRecentItem(name) {
+            const recentItem = document.createElement('li');
+            recentItem.textContent = name;
+            recentList.prepend(recentItem); // Adiciona o mais recente no topo
+        }
+
+        // Função para remover link
+        function removeLink(button) {
+            const li = button.parentElement;
+            linkList.removeChild(li);
+            saveData(); // Atualiza a lista após remover
+        }
+
+        // Salva os links no LocalStorage
+        function saveData() {
+            const links = [];
+            linkList.querySelectorAll('li').forEach(link => {
+                const anchor = link.querySelector('a');
+                const tags = link.querySelector('.tags').textContent;
+                const description = link.querySelector('.description').textContent;
+                links.push({ name: anchor.textContent, url: anchor.href, tags, description });
+            });
+            localStorage.setItem('savedLinks', JSON.stringify(links));
+        }
+
+        // Carrega os links salvos no LocalStorage
+        function loadLinks() {
+            const savedLinks = JSON.parse(localStorage.getItem('savedLinks')) || [];
+            if (savedLinks) {
+                savedLinks.forEach(link => {
+                    addLink(link.name, link.url, link.tags, link.description);
+                });
+            }
+        }
+
+        // Filtra os links com base nas tags
+        filterTag.addEventListener('input', function() {
+            const filterValue = filterTag.value.toLowerCase();
+            linkList.querySelectorAll('li').forEach(item => {
+                const tags = item.querySelector('.tags').textContent.toLowerCase();
+                if (tags.includes(filterValue)) {
+                    item.style.display = ''; // Mostra o item
+                } else {
+                    item.style.display = 'none'; // Esconde o item
+                }
+            });
+        });
+
+        // Função para ordenar os links com base no valor selecionado (nome ou tag)
+        sortSelect.addEventListener('change', function() {
+            sortLinks();
+        });
+
+        function sortLinks() {
+            const links = Array.from(linkList.querySelectorAll('li'));
+
+            const sortBy = sortSelect.value;
+            links.sort((a, b) => {
+                if (sortBy === 'name') {
+                    return a.querySelector('a').textContent.localeCompare(b.querySelector('a').textContent);
+                } else if (sortBy === 'tag') {
+                    return a.querySelector('.tags').textContent.localeCompare(b.querySelector('.tags').textContent);
+                }
+            });
+
+            // Limpa a lista e insere os links ordenados novamente
+            linkList.innerHTML = '';
+            links.forEach(link => linkList.appendChild(link));
+        }
+
+        // Exporta os links em formato JSON
+        function exportLinks() {
+            const links = JSON.parse(localStorage.getItem('savedLinks')) || [];
+            const blob = new Blob([JSON.stringify(links, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'links.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // Importa links de um arquivo JSON
+        function importLinks() {
+            const fileInput = document.getElementById('importLinksInput');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const importedLinks = JSON.parse(e.target.result);
+                    const overwrite = confirm("Deseja sobrescrever a lista existente ou adicionar os links importados?");
+                    if (overwrite) {
+                        linkList.innerHTML = ''; // Limpa a lista
+                    }
+                    importedLinks.forEach(link => {
+                        addLink(link.name, link.url, link.tags, link.description);
+                    });
+                    saveData(); // Salva os links importados no LocalStorage
+                };
+                reader.readAsText(file);
+            }
+        }
+    </script>
+
+</body>
+</html>
